@@ -53,7 +53,7 @@ class Telegram_Alarm(Alarm):
 		#Connect and send startup messages
  		self.connect()
 		if parse_boolean(self.startup_message):
-			self.client.sendMessage(self.pokemon['chat_id'], 'PokeAlarm activated! We will alert this chat about pokemon.')
+			self.client.sendMessage(self.pokemon['chat_id'], 'Pokebot activated! We will alert you about pokemon.')
 		log.info("Telegram Alarm intialized.")
 
 	#(Re)establishes Telegram connection

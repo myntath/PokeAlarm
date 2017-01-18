@@ -157,7 +157,7 @@ class Alarm_Manager(Thread):
 		#Check if Pokemon has any filters set up
 		filter = self.pokemon_list.get(pkmn_id)
 		if filter is None:
-			log.info(name + " ignored: notify not enabled.")
+			#log.info(name + " ignored: notify not enabled.")
 			return
 		
 		#Check if the Pokemon has already expired
