@@ -89,7 +89,7 @@ class Telegram_Alarm(Alarm):
 				'longitude':  info['lng'],
 				'title': replace(alert['title'], info) ,
 				'address': replace(alert['body'], info),
-				'disable_notification': 'False'
+				'disable_notification': 'True'
 			}
 			try_sending(log, self.connect, "Telegram (Loc)", self.client.sendVenue, args)
 		else:
@@ -106,7 +106,7 @@ class Telegram_Alarm(Alarm):
   				'chat_id': alert['chat_id'],
   				'latitude': info['lat'],
   				'longitude':  info['lng'],
-  				'disable_notification': "%s" % alert['disable_map_notification']
+  				'disable_notification': 'True'
   			}
 			try_sending(log, self.connect, "Telegram (Loc)", self.client.sendLocation, args)
 			
