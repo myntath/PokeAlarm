@@ -165,7 +165,8 @@ class Manager(object):
         # Check that the filter is set
         if pkmn_id not in self.__pokemon_filter:
             if config['QUIET'] is False:
-                log.info("{} ignored: filter was not set".format(name))
+                #log.info("{} ignored: filter was not set".format(name))
+                pass
                 return
 
         # Check the time remaining
