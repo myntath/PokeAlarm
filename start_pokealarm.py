@@ -99,7 +99,10 @@ def start_server():
 
 def parse_settings(root_path):
     config['ROOT_PATH'] = root_path
-    parser = configargparse.ArgParser(default_config_files=[get_path('config/config.ini')])
+    # Set the default config files up
+    config_files = [ get_path('config/config.ini') ] if '-cf' not in sys.argv and '--config' not in sys.argv else []
+    parser = configargparse.ArgParser(default_config_files=config_files)
+    parser.add_argument('-cf', '--config', is_config_file=True, help='Configuration file')
     parser.add_argument('-d', '--debug', help='Debug Mode', action='store_true', default=False)
     parser.add_argument('-H', '--host', help='Set web server listening host', default='127.0.0.1')
     parser.add_argument('-P', '--port', type=int, help='Set web server listening port', default=4000)
@@ -118,7 +121,7 @@ def parse_settings(root_path):
     parser.add_argument('-l', '--location', type=parse_unicode, action='append', default=[None],
                         help='Location, can be an address or coordinates')
     parser.add_argument('-L', '--locale', type=parse_unicode, action='append', default=['en'],
-                        choices=['de', 'en', 'es', 'fr', 'it', 'zh_hk'],
+                        choices=['de', 'en', 'es', 'fr', 'it', 'ko', 'zh_hk'],
                         help='Locale for Pokemon and Move names: default en, check locale folder for more options')
     parser.add_argument('-u', '--units', type=parse_unicode, default=['imperial'], action='append',
                         choices=['metric', 'imperial'],
