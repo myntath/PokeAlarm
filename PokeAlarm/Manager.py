@@ -259,7 +259,7 @@ class Manager(object):
         
         ## TODO send list of pokemons
         namelist = "Currently sending alerts for "
-        for name in self.__pokemon_filter:
+        for name in self.__pokemon_settings['filters']:
             if name != 'enabled':
                 name = self.__pokemon_name[name]
                 namelist+=', ' + str(name)
@@ -319,13 +319,6 @@ class Manager(object):
             return
         self.__pokemon_hist[id_] = pkmn['disappear_time']
 
-        # Check that the filter is set
-        #if pkmn_id not in self.__pokemon_filter:
-        #    if config['QUIET'] is False:
-        #        #log.info("{} ignored: filter was not set".format(name))
-        #        pass
-        #        return
-
         # Check the time remaining
         seconds_left = (pkmn['disappear_time'] - datetime.utcnow()).total_seconds()
         if seconds_left < self.__time_limit:
@@ -336,7 +329,7 @@ class Manager(object):
         # Check that the filter is even set
         if pkmn_id not in self.__pokemon_settings['filters']:
             if self.__quiet is False:
-                log.info("{} ignored: no filters are set".format(name))
+                log.debug("{} ignored: no filters are set".format(name))
             return
 
         # Extract some useful info that will be used in the filters

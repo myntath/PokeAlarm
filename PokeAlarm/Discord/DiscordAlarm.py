@@ -132,10 +132,14 @@ class DiscordAlarm(Alarm):
 
     # Send a plain text message
     def send_text(self, message):
-        args = {
-            'api_key': self.__api_key,
+        payload = {
+            'api_key': self.__webhook_url,
             'username': 'PokeAlarm',
             'content': message
+        }
+        args = {
+            'url': self.__webhook_url,
+            'payload': payload
         }
         self.send_webhook(**args)
 
