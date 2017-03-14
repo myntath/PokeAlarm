@@ -143,3 +143,10 @@ class TelegramAlarm(Alarm):
             self.send_alert(self.__gym, gym_info, sticker_list.get(gym_info['new_team'].lower()))
         else:
             self.send_alert(self.__gym, gym_info)
+
+
+    # Send a plain text message
+    def send_text(self, text):
+        self.__client = None
+        self.connect()
+        self.__client.sendMessage(self.__pokemon['chat_id'],text)

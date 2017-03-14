@@ -102,3 +102,7 @@ class FacebookPageAlarm(Alarm):
     # Trigger an alert based on Gym info
     def gym_alert(self, gym_info):
         self.send_alert(self.__gym, gym_info)
+
+    # Temporrary TODO
+    def send_text(self, text):
+        pass

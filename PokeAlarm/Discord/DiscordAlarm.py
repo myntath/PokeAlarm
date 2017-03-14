@@ -132,3 +132,13 @@ class DiscordAlarm(Alarm):
     # Trigger an alert based on Pokestop info
     def gym_alert(self, gym_info):
         self.send_alert(self.__gym, gym_info)
+
+    # Send a plain text message
+    def send_text(self, message):
+        args = {
+            'api_key': self.__api_key,
+            'username': 'PokeAlarm',
+            'content': message
+        }
+        self.send_webhook(**args)
+

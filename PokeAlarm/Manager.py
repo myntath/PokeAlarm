@@ -110,6 +110,16 @@ class Manager(object):
         self.intialize_process()
 
         last_clean = datetime.utcnow()
+        
+        ## TODO send list of pokemons
+        namelist = "Currently sending alerts for "
+        for name in self.__pokemon_filter:
+            if name != 'enabled':
+                name = self.__pokemon_name[name]
+                namelist+=', ' + str(name)
+        log.debug(namelist)
+        for alarm in self.__alarms:
+            alarm.send_text(namelist)
 
         while True:  # Run forever and ever
             # Get next object to process
