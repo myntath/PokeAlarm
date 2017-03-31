@@ -7,7 +7,7 @@ monkey.patch_all()
 
 # Setup Logging
 import logging
-logging.basicConfig(format='%(asctime)s [%(processName)15.15s][%(name)10.10s][%(levelname)8.8s] %(message)s',
+logging.basicConfig(format='%(asctime)s [%(threadName)15.15s][%(name)10.10s][%(levelname)8.8s] %(message)s',
                     level=logging.INFO)
 
 # Standard Library Imports

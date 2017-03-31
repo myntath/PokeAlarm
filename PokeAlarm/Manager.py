@@ -17,7 +17,8 @@ from Filters import Geofence, load_pokemon_section, load_pokestop_section, load_
 from Utils import get_cardinal_dir, get_dist_as_str, get_earth_dist, get_path, get_time_as_str, \
     require_and_remove_key, parse_boolean, contains_arg
 log = logging.getLogger('Manager')
-
+from queue import Queue
+from threading import Thread
 
 class Manager(object):
 
@@ -60,7 +61,7 @@ class Manager(object):
         self.load_alarms_file(get_path(alarm_file))
 
         # Initialize the queue and start the process
-        self.__queue = multiprocessing.Queue()
+        self.__queue = Queue()
         self.__process = None
 
         log.info("----------- Manager '{}' successfully created.".format(self.__name))
@@ -231,7 +232,10 @@ class Manager(object):
 
     # Start it up
     def start(self):
-        self.__process = gipc.start_process(target=self.run, args=(), name=self.__name)
+        #self.__process = gipc.start_process(target=self.run, args=(), name=self.__name)
+        self.__process = Thread(target=self.run, args=(), name=self.__name)
+        self.__process.daemon = True
+        self.__process.start()
 
     def setup_in_process(self):
         # Update config
@@ -289,7 +293,7 @@ class Manager(object):
                 log.debug("Finished processing object {} with id {}".format(obj['type'], obj['id']))
             except Exception as e:
                 log.error("Encountered error during processing: {}: {}".format(type(e).__name__, e))
-                log.debug("Stack trace: \n {}".format(traceback.format_exc()))
+                log.error("Stack trace: \n {}".format(traceback.format_exc()))
 
     # Clean out the expired objects from histories (to prevent oversized sets)
     def clean_hist(self):
@@ -336,7 +340,7 @@ class Manager(object):
         passed = False
         lat, lng = pkmn['lat'], pkmn['lng']
         dist = get_earth_dist([lat, lng], self.__latlng)
-        iv = pkmn['iv']
+        iv = float(pkmn['iv'])
         def_ = pkmn['def']
         atk = pkmn['atk']
         sta = pkmn['sta']
@@ -362,7 +366,7 @@ class Manager(object):
             if iv != '?':
                 if not filt.check_iv(iv):
                     if self.__quiet is False:
-                        log.info("{} rejected: IV percent ({:.2f}) not in range {:.2f} to {:.2f} - (F #{})".format(
+                        log.debug("{} rejected: IV percent ({:.2f}) not in range {:.2f} to {:.2f} - (F #{})".format(
                             name, iv, filt.min_iv, filt.max_iv, filt_ct))
                     continue
             else:

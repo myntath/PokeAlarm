@@ -9,7 +9,6 @@ from ..Utils import parse_boolean, get_static_map_url, reject_leftover_parameter
 log = logging.getLogger('Discord')
 try_sending = Alarm.try_sending
 replace = Alarm.replace
-
 #####################################################  ATTENTION!  #####################################################
 # You DO NOT NEED to edit this file to customize messages for services! Please see the Wiki on the correct way to
 # customize services In fact, doing so will likely NOT work correctly with many features included in PokeAlarm.
@@ -52,12 +51,12 @@ class DiscordAlarm(Alarm):
         self.__startup_message = parse_boolean(settings.pop('startup_message', "True"))
         self.__map = settings.pop('map', {})  # default for the rest of the alerts
         self.__static_map_key = static_map_key
+        self.__use_map = parse_boolean(settings.pop('use_map', "True"))
 
         # Set Alert Parameters
         self.__pokemon = self.create_alert_settings(settings.pop('pokemon', {}), self._defaults['pokemon'])
         self.__pokestop = self.create_alert_settings(settings.pop('pokestop', {}), self._defaults['pokestop'])
         self.__gym = self.create_alert_settings(settings.pop('gym', {}), self._defaults['gym'])
-
         # Warn user about leftover parameters
         reject_leftover_parameters(settings, "'Alarm level in Discord alarm.")
 
@@ -91,7 +90,9 @@ class DiscordAlarm(Alarm):
             'body': settings.pop('body', default['body']),
             'map': get_static_map_url(settings.pop('map', self.__map), self.__static_map_key)
         }
-
+        use_map = parse_boolean(settings.pop("use_map", "True"))
+        if not use_map:
+            alert['map'] = None
         reject_leftover_parameters(settings, "'Alert level in Discord alarm.")
         return alert
 
@@ -107,7 +108,7 @@ class DiscordAlarm(Alarm):
                 'thumbnail': {'url': replace(alert['icon_url'], info)}
             }]
         }
-        if alert['map'] is not None:
+        if alert['map'] is not None and self.__use_map:
             payload['embeds'][0]['image'] = {'url': replace(alert['map'], {'lat': info['lat'], 'lng': info['lng']})}
         args = {
             'url': alert['webhook_url'],
@@ -141,7 +142,8 @@ class DiscordAlarm(Alarm):
             'url': self.__webhook_url,
             'payload': payload
         }
-        self.send_webhook(**args)
+        log.error(args)
+        #self.send_webhook(**args)
 
     def send_webhook(self, url, payload):
         resp = requests.post(url, json=payload, timeout=(None, 5))

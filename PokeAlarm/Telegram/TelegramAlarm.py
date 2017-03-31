@@ -128,7 +128,7 @@ class TelegramAlarm(Alarm):
     def send_text(self, text):
         self.__client = None
         self.connect()
-        self.__client.sendMessage(self.__pokemon['chat_id'],text)
+        #self.__client.sendMessage(self.__pokemon['chat_id'],text)
 
     # Send a message to telegram
     def send_message(self, chat_id, text):
